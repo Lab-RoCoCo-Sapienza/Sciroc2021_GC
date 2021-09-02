@@ -59,7 +59,6 @@ def gc_conn():
                 if(ph == 1):
                         hello_str = "phase recognition"
                         print(1)
-                        callback("caffe")
                         rospy.loginfo(hello_str)
                         pub.publish(hello_str)
                         rate.sleep()
