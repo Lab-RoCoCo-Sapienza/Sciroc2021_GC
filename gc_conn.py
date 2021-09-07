@@ -61,27 +61,27 @@ def gc_conn():
                         print(1)
                         rospy.loginfo(hello_str)
                         pub.publish(hello_str)
-                        rate.sleep()
+                        sleep(0.1)
 
                 elif(ph == 2):
                         hello_str = "phase execution" + str(data)
                         rospy.loginfo(hello_str)
                         print(2)
                         pub.publish(hello_str)
-                        rate.sleep()
+                        sleep(0.1)
                 elif(ph == 0):
                         hello_str = "phase connection"
                         rospy.loginfo(hello_str)
                         print(0)
                         pub.publish(hello_str)
-                        rate.sleep()
+                        sleep(0.1)
 
                 else:
                         hello_str = "phase uknown" 
                         rospy.loginfo(hello_str)
                         print(4)
                         pub.publish(hello_str)
-                        rate.sleep()
+                        sleep(0.1)
 
 
 
