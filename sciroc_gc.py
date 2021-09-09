@@ -99,9 +99,9 @@ Per favore, bicchiere uno
 Caffe non c e mi dispiace
 
 '''
-MY_IP = "127.0.0.1"
+MY_IP = "10.68.0.128"
 UDP_IP = "127.0.0.1"
-UDP_PORT_WRITE = 5432
+UDP_PORT_WRITE = 5435
 UDP_PORT_READ = 5431
 MESSAGE = b"0"
 
@@ -140,7 +140,7 @@ simple_dic.append("Bevande/bere")
 simple_dic.append("Cibo/mangiare")
 simple_dic.append("Panino")
 
-comp_vec.append("Composed signs")
+#comp_vec.append("Composed signs")
 comp_vec.append("Buongiorno")
 comp_vec.append("Caffe macchiato")
 comp_vec.append("Succo di frutta")
@@ -164,6 +164,7 @@ sent_vec.append("Mi scusi, il conto da darmi")
 sent_vec.append("WC uomini e a destra")
 sent_vec.append("Per favore, bicchiere uno")
 sent_vec.append("Caffe non c e mi dispiace")
+
 
 simple_dic_ex.append("Caffe")
 simple_dic_ex.append("Cocacola")
@@ -216,7 +217,7 @@ def rob_bind():
         UDP_IP = ip
         try:
             sock_read.bind((MY_IP, UDP_PORT_READ))
-            sock_read.settimeout(20)
+            sock_read.settimeout(90)
         except:
             pre_app.setLabel("ip_stat", "IP Binding status:  IP connection error")
         else:
@@ -241,25 +242,27 @@ def reset():
     app.setLabel("si4", sent)
     ph = 1
     for i in range(1,5):
-        app.setLabelBg("si"+str(i), "grey")
-        app.setLabelBg("f"+str(i), "grey")
+        app.setLabelBg("si"+str(i), "white")
+        app.setLabelBg("f"+str(i), "white")
         app.setLabel("st"+str(i), "None")
-        app.setLabelBg("st" + str(i), "grey")
+        app.setLabelBg("st" + str(i), "white")
     app.setLabelBg("si1", "orange")
     app.setLabelBg("f1", "orange")
 
 def reset_ex():
     global simple_dic_ex, comp_vec_ex, sent_vec_ex, ph
-    s1 = random.sample(simple_dic_ex, 1)
-    c = random.sample(comp_vec_ex, 1)
+    s1,s2 = random.sample(simple_dic_ex, 2)
+    c,c2 = random.sample(comp_vec_ex, 2)
     sent = random.sample(sent_vec_ex, 1)
     app.setLabel("si1", s1)
-    app.setLabel("si2", c)
-    app.setLabel("si3", sent)
+    app.setLabel("si2", s2)
+    app.setLabel("si3", c)
+    app.setLabel("si4", c2)
+    app.setLabel("si5", sent)
     ph = 1
-    for i in range(1, 4):
-        app.setLabelBg("si" + str(i), "grey")
-        app.setLabelBg("f" + str(i), "grey")
+    for i in range(1, 6):
+        app.setLabelBg("si" + str(i), "white")
+        app.setLabelBg("f" + str(i), "white")
 
 
 
@@ -274,13 +277,13 @@ def start_ex():
     global MESSAGE, UDP_IP, UDP_PORT_WRITE, sock, sock_read, comp_vec, simple_dic, sent_vec, ph
     MESSAGE = b"1"
     sign_str = "2"
-    for i in range(1, 4):
+    for i in range(1, 6):
         si = app.getLabel("si" + str(i))
         sign_str = sign_str + "|" + str(si)
 
     MESSAGE = bytes(sign_str, 'utf-8')
     sock.sendto(MESSAGE, (UDP_IP, UDP_PORT_WRITE))
-    for i in range(1, 4):
+    for i in range(1, 6):
         app.setLabelBg("si" + str(i), "green")
         app.setLabelBg("f" + str(i), "green")
 
@@ -292,6 +295,7 @@ def start():
     MESSAGE = b"1"
     sock.sendto(MESSAGE, (UDP_IP, UDP_PORT_WRITE))
     try:
+        sock_read.recv(1)
         ret = sock_read.recv(1024)
         print("ret = ", ret)
     except:
@@ -303,7 +307,7 @@ def start():
     if(app.getLabel("st"+str(ph)) == app.getLabel("si"+str(ph))):
         app.setLabelBg("st"+str(ph), "green")
     else:
-        app.setLabelBg("st" + str(ph), "red")
+        app.setLabelBg("st" + str(ph), "orange")
 
 def change_sign():
     global ph
@@ -332,6 +336,7 @@ pre_app.go()
 if(tp == "Interpretation"):
     app = gui()
     app.setSize(700,500)
+    app.setFont(size=32)
     app.setTitle("Sciroc GameController")
     app.addLabel(title="titolo", text="Sciroc Challenge GameController: Interpretation phase", row = 0, column=0, colspan=3)
     #####Label fasi
@@ -362,6 +367,7 @@ if(tp == "Interpretation"):
 else:
     app = gui()
     app.setSize(700, 500)
+    app.setFont(size=32)
     app.setTitle("Sciroc GameController")
     app.addLabel(title="titolo", text="Sciroc Challenge GameController: Execution phase", row=0, column=0,
                  colspan=2)
@@ -369,15 +375,19 @@ else:
     #####Label fasi
     app.addLabel(title="S_info", text="Phase", row=1, column=1)
     app.addLabel(title="f1", text="Simple sign ", row=2, column=1)
-    app.addLabel(title="f2", text="Composed sign ", row=3, column=1)
-    app.addLabel(title="f3", text="Sentence ", row=4, column=1)
+    app.addLabel(title="f2", text="Simple sign ", row=3, column=1)
+    app.addLabel(title="f3", text="Composed sign ", row=4, column=1)
+    app.addLabel(title="f4", text="Composed sign ", row=5, column=1)
+    app.addLabel(title="f5", text="Sentence ", row=6, column=1)
     ####Label segni
     app.addLabel(title="signs", text="Signs", row=1)
     app.addLabel(title="si1", text="Sign", row=2, column=0)
     app.addLabel(title="si2", text="Sign", row=3, column=0)
     app.addLabel(title="si3", text="Sign", row=4, column=0)
+    app.addLabel(title="si4", text="Sign", row=5, column=0)
+    app.addLabel(title="si5", text="Sign", row=6, column=0)
 
-    app.addButton(title="Send", func=start_ex, row=5, column=0)
-    app.addButton(title="Reset", func=reset_ex, row=5, column=1)
+    app.addButton(title="Send", func=start_ex, row=7, column=0)
+    app.addButton(title="Reset", func=reset_ex, row=7, column=1)
     app.setStartFunction(reset_ex)
     app.go()
